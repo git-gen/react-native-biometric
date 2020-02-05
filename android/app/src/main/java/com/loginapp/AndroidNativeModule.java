@@ -60,7 +60,6 @@ public class AndroidNativeModule extends ReactContextBaseJavaModule {
                             @Override
                             public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
                                 super.onAuthenticationError(errorCode, errString);
-                                callback.invoke("BIOMETRIC_ERROR");
                             }
                             @Override
                             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
@@ -70,7 +69,6 @@ public class AndroidNativeModule extends ReactContextBaseJavaModule {
                             @Override
                             public void onAuthenticationFailed() {
                                 super.onAuthenticationFailed();
-                                callback.invoke("BIOMETRIC_FAILED");
                             }
                         };
                         BiometricPrompt biometricPrompt = new BiometricPrompt(fragmentActivity, executor, authCallback);

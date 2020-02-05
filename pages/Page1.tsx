@@ -10,16 +10,20 @@ import {
 } from 'react-native';
 import TouchID from 'react-native-touch-id';
 
-interface stateType {
-  id: string,
-  password: string,
-  localId: string,
-  localPassword: string,
-  apiLevel: string,
-  authState: string,
+interface propsType {
+  navigation: any;
 }
 
-class Page1 extends React.Component<stateType> {
+interface stateType {
+  id: string;
+  password: string;
+  localId: string;
+  localPassword: string;
+  apiLevel: string;
+  authState: string;
+}
+
+class Page1 extends React.Component<propsType, stateType> {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,43 +52,27 @@ class Page1 extends React.Component<stateType> {
   authentication = (platformOS) => {
     if (platformOS === 'android') {
       // Androidの生体認証
-      if (this.state.apiLevel >= 22) {
-        // biometric
-        switch (this.state.authState) {
-          case "BIOMETRIC_SUCCESS":
-            this.biometricAuthentication();
-            break;
-          case "BIOMETRIC_ERROR_NO_HARDWARE":
-            Alert.alert("端末に生体認証機能がありません");
-            break;
-          case "BIOMETRIC_ERROR_HW_UNAVAILABLE":
-            Alert.alert("生体認証機能が利用できません");
-            break;
-          case "BIOMETRIC_ERROR_NONE_ENROLLED":
-            Alert.alert("認証データが登録されていません");
-            break;
-          default:
-            Alert.alert("認証に失敗しました");
-            break;
-        }
-      } else {
-        // fingerprint
-        TouchID.authenticate('指紋認証を行ってください', {
-          title: '生体認証実行',
-          imageColor: '#008080',
-          imageErrorColor: 'red',
-          sensorErrorDescription: '認証に失敗しました',
-          cancelText: 'キャンセル'
-        })
-          .then(success => {
-            this.props.navigation.navigate('Page2')
-          })
-          .catch(error => {
-            console.log({ error });
-          });
+      // NativeModuleを使用（biometric）
+      switch (this.state.authState) {
+        case "BIOMETRIC_SUCCESS":
+          this.biometricAuthentication();
+          break;
+        case "BIOMETRIC_ERROR_NO_HARDWARE":
+          Alert.alert("端末に生体認証機能がありません");
+          break;
+        case "BIOMETRIC_ERROR_HW_UNAVAILABLE":
+          Alert.alert("生体認証機能が利用できません");
+          break;
+        case "BIOMETRIC_ERROR_NONE_ENROLLED":
+          Alert.alert("認証データが登録されていません");
+          break;
+        default:
+          Alert.alert("エラーが発生しました");
+          break;
       }
     } else {
       // iOSの生体認証
+      // ライブラリを使用（react-native-touch-id）
       TouchID.authenticate('生体認証実行')
         .then(success => {
           this.props.navigation.navigate('Page2')
@@ -102,14 +90,7 @@ class Page1 extends React.Component<stateType> {
         case "BIOMETRIC_SUCCEEDED":
           this.props.navigation.navigate('Page2');
           break;
-        case "BIOMETRIC_FAILED":
-          Alert.alert("認証に失敗しました");
-          break;
-        case "BIOMETRIC_ERROR":
-          Alert.alert("エラーが発生しました");
-          break;
         default:
-          Alert.alert("認証に失敗しました");
           break;
       }
     });

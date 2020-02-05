@@ -6,7 +6,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-class Page2 extends React.Component {
+interface propsType {
+  navigation: any;
+}
+
+class Page2 extends React.Component<propsType> {
   render() {
     return (
       <View style={styles.container}>
